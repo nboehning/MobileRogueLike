@@ -1,0 +1,21 @@
+<?xml version = "1.0"?>
+	<productList title = "ABC Products">
+		<product>
+			<name> Blah blah </name>
+			<description> more blah's </description>
+			<price> $0.00 </price>
+			<shipping> $100.00 </shipping>
+		</product>
+		<product>
+			<name> Blah blah blah </name>
+			<description> more blah blah's </description>
+			<price> $10.00 </price>
+			<shipping> $1000.00 </shipping>
+		</product>
+		<product>
+			<name> Blah blah blah blah </name>
+			<description> more blah blah blah's </description>
+			<price> $100.00 </price>
+			<shipping> $10,000.00 </shipping>
+		</product>
+	</productList>
