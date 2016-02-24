@@ -8,14 +8,17 @@ public class HeroController : MonoBehaviour {
 	public Animator animator;
 	public float orbSpeed = 20f;
 	GameObject orbPrefab;
-
+    GameObject deathPanel;
 
 	// Use this for initialization
 	void Start () 
 	{
+        Time.timeScale = 1f;
 		animator = GetComponent<Animator> ();
 		right = left = up = down = false;
 		orbPrefab = Resources.Load ("Orb") as GameObject;
+        deathPanel = GameObject.Find("DeathPanel");
+        deathPanel.SetActive(false);
 	}
 
 	void Update()
@@ -62,6 +65,7 @@ public class HeroController : MonoBehaviour {
         {
             Time.timeScale = 0f;
             Destroy(gameObject);
+            deathPanel.SetActive(true);
         }
     }
 
