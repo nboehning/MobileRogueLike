@@ -3,7 +3,7 @@ using System.Collections;
 
 public class HeroController : MonoBehaviour {
 
-	public float speed = 2.0f;
+	public float speed = 0.5f;
 	public bool right, left, up, down;
 	public Animator animator;
 	public float orbSpeed = 20f;
@@ -61,7 +61,7 @@ public class HeroController : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.name == "Enemy(Clone)")
+        if(other.tag == "Enemy")
         {
             Time.timeScale = 0f;
             Destroy(gameObject);

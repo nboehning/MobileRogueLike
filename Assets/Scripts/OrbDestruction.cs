@@ -11,6 +11,14 @@ public class OrbDestruction : MonoBehaviour {
         Invoke("DestroyOrb", lifeTime);
     }
 	
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.gameObject.GetComponent<SpriteRenderer>().sortingLayerName == "Obstacles")
+        {
+            Destroy(this.gameObject);
+        }
+    }
+
 	void DestroyOrb()
     {
         Destroy(this.gameObject);
