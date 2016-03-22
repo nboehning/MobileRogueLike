@@ -20,7 +20,7 @@ public class LoadTiles : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        tileParent = Instantiate(tileParent, Vector3.zero, Quaternion.identity) as GameObject;
+        tileParent = GameObject.Find("TileParent");
         LoadMap(Random.Range(0, mapInformation.Length));
     }
 
@@ -248,4 +248,9 @@ public class LoadTiles : MonoBehaviour {
             }
         }
 	}
+
+    void ParseXml()
+    {
+        
+    }
 }
