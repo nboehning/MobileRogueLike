@@ -16,6 +16,8 @@ public class SettingsSingleton : MonoBehaviour {
     bool isSwipeShoot = true;
     bool isSwipeMove = true;
     gameDifficulty curDifficulty;
+    [HideInInspector]
+    public bool isEndless;
 
     // Gameobjects that set settings
     GameObject volumeSlider;
@@ -31,7 +33,7 @@ public class SettingsSingleton : MonoBehaviour {
     {
         DontDestroyOnLoad(gameObject);
     }
-    void Start()
+    public void SetThings()
     {
         if (SceneManager.GetActiveScene().name == "MainMenu")
         {
@@ -44,7 +46,10 @@ public class SettingsSingleton : MonoBehaviour {
             medToggle = GameObject.Find("MediumDiffToggle");
             hardToggle = GameObject.Find("HardDiffToggle");
         }
-        
+        else if (SceneManager.GetActiveScene().name == "Game")
+        {
+            // Set necessary variables on gameobjects here
+        }
     }
     
     public void SetSettings()

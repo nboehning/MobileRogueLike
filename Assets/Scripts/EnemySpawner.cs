@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnemySpawner : MonoBehaviour {
-
-	GameObject enemyPrefab;
+public class EnemySpawner : MonoBehaviour
+{
+    GameObject enemyPrefab;
 
 	float spawnSpeed = 1f;
 	float spawnVariance = 0.5f;

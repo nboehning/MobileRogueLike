@@ -3,11 +3,28 @@ using System.Collections;
 
 public class HeroController : MonoBehaviour {
 
+    // Settings Variables
+    public bool isSwipeShoot;
+    public bool isSwipeMove;
+
+    // Movement Variables
 	public float speed = 0.5f;
 	public bool right, left, up, down;
-	public Animator animator;
+
+    // Shooting Variables
+    Vector2 prevPosition;
+    Vector2 curPosition;
+    float touchDelta;
+    public int iComfort = 1;
+
+    // Animation Controller
+    public Animator animator;
+
+    // Orb Variables
 	public float orbSpeed = 20f;
 	GameObject orbPrefab;
+
+    // Other
     GameObject deathPanel;
 
 	// Use this for initialization
@@ -23,35 +40,91 @@ public class HeroController : MonoBehaviour {
 
 	void Update()
 	{
-        MoveCharacter();
-
 #if UNITY_EDITOR
+        MoveCharacter();
+        MoveCharacterMobile();
         if (Input.GetButtonDown("Fire1"))
         {
             SpawnOrb();
         }
-        else if(Input.touchCount > 0)
+        else if (Input.touchCount > 0)
         {
-            foreach (Touch next in Input.touches)
+            if (isSwipeShoot)
             {
-                if(next.phase == TouchPhase.Began)
+                if (Input.touchCount == 1)
                 {
-                    SpawnOrb();
+                    if (Input.GetTouch(0).phase == TouchPhase.Began)
+                    {
+                        prevPosition = Input.GetTouch(0).position;
+                    }
+                    if (Input.GetTouch(0).phase == TouchPhase.Ended)
+                    {
+                        curPosition = Input.GetTouch(0).position;
+
+                        touchDelta = curPosition.magnitude - prevPosition.magnitude;
+
+                        if (Mathf.Abs(touchDelta) > iComfort)
+                        {
+                            if (touchDelta > 0)
+                            {
+                                SpawnOrb();
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (Touch next in Input.touches)
+                {
+                    if (next.phase == TouchPhase.Began)
+                    {
+                        SpawnOrb();
+                    }
                 }
             }
         }
 #elif UNITY_ANDROID
+        MoveCharacterMobile();
         if(Input.touchCount > 0)
         {
-            foreach (Touch next in Input.touches)
+            if(isSwipeShoot)
             {
-                if(next.phase == TouchPhase.Began)
+                if (Input.touchCount == 1)
                 {
-                    SpawnOrb();
+                    if (Input.GetTouch(0).phase == TouchPhase.Began)
+                    {
+                        prevPosition = Input.GetTouch(0).position;
+                    }
+                    if (Input.GetTouch(0).phase == TouchPhase.Ended)
+                    {
+                        curPosition = Input.GetTouch(0).position;
+
+                        touchDelta = curPosition.magnitude - prevPosition.magnitude;
+
+                        if (Mathf.Abs(touchDelta) > iComfort)
+                        {
+                            if (touchDelta > 0)
+                            {
+                                SpawnOrb();
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (Touch next in Input.touches)
+                {
+                    if(next.phase == TouchPhase.Began)
+                    {
+                        SpawnOrb();
+                    }
                 }
             }
         }
 #elif UNITY_STANDALONE
+        MoveCharacter();
         if (Input.GetButtonDown("Fire1"))
         {
             SpawnOrb();
@@ -83,9 +156,100 @@ public class HeroController : MonoBehaviour {
             tempOrbRigidbody.velocity = new Vector2(0f, -orbSpeed);
     }
 
+    void MoveCharacterMobile()
+    {
+        // Swipe Move
+        if (isSwipeMove)
+        {
+            if (Input.touchCount == 1)
+            {
+                if (Input.GetTouch(0).phase == TouchPhase.Began)
+                {
+                    prevPosition = Input.GetTouch(0).position;
+                }
+                if (Input.GetTouch(0).phase == TouchPhase.Ended)
+                {
+                    curPosition = Input.GetTouch(0).position;
+
+                    touchDelta = curPosition.magnitude - prevPosition.magnitude;
+
+                    if (Mathf.Abs(touchDelta) > iComfort)
+                    {
+                        if (touchDelta > 0)
+                        {
+                            if (Mathf.Abs(curPosition.x - prevPosition.x) > Mathf.Abs(curPosition.y - prevPosition.y))
+                            {
+                                // Right
+                                animator.SetBool("left", false);
+                                animator.SetBool("right", true);
+                                animator.SetBool("up", false);
+                                animator.SetBool("down", false);
+
+                                down = left = up = false;
+                                right = true;
+
+                                transform.Translate(Vector3.right * speed * Time.deltaTime);
+                            }
+                            else
+                            {
+                                // Top
+                                animator.SetBool("left", false);
+                                animator.SetBool("right", false);
+                                animator.SetBool("up", true);
+                                animator.SetBool("down", false);
+
+                                down = left = right = false;
+                                up = true;
+
+                                transform.Translate(Vector3.up * speed * Time.deltaTime);
+                            }
+                        }
+                        else
+                        {
+                            if (Mathf.Abs(curPosition.x - prevPosition.x) > Mathf.Abs(curPosition.y - prevPosition.y))
+                            {
+                                // Left
+                                animator.SetBool("left", true);
+                                animator.SetBool("right", false);
+                                animator.SetBool("up", false);
+                                animator.SetBool("down", false);
+
+                                down = right = up = false;
+                                left = true;
+
+                                transform.Translate(Vector3.left * speed * Time.deltaTime);
+                            }
+                            else
+                            {
+                                // Down
+                                animator.SetBool("left", false);
+                                animator.SetBool("right", false);
+                                animator.SetBool("up", false);
+                                animator.SetBool("down", true);
+
+                                right = left = up = false;
+                                down = true;
+
+                                transform.Translate(Vector3.down * speed * Time.deltaTime);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // Tilt Move
+        else
+        {
+
+        }
+    }
 	void MoveCharacter()
 	{
-		if (Input.GetKey (KeyCode.D))
+        float horizValue = Input.GetAxis("Horizontal");
+        float vertValue = Input.GetAxis("Vertical");
+
+        // Character Moves Right
+		if (horizValue > 0)
 		{
 			animator.SetBool ("left", false);
 			animator.SetBool ("right", true);
@@ -97,8 +261,8 @@ public class HeroController : MonoBehaviour {
 
 			transform.Translate (Vector3.right * speed * Time.deltaTime);
 		}
-
-		if (Input.GetKey (KeyCode.A))
+        // Character Moves Left
+        else if (horizValue < 0)
 		{
 			animator.SetBool ("left", true);
 			animator.SetBool ("right", false);
@@ -110,8 +274,8 @@ public class HeroController : MonoBehaviour {
 
 			transform.Translate (Vector3.left * speed * Time.deltaTime);
 		}
-
-		if (Input.GetKey (KeyCode.W))
+        // Character Move Up
+        if (vertValue > 0)
 		{
 			animator.SetBool ("left", false);
 			animator.SetBool ("right", false);
@@ -123,8 +287,8 @@ public class HeroController : MonoBehaviour {
 
 			transform.Translate (Vector3.up * speed * Time.deltaTime);
 		}
-
-		if (Input.GetKey (KeyCode.S))
+        // Character Moves Down
+        else if (vertValue < 0)
 		{
 			animator.SetBool ("left", false);
 			animator.SetBool ("right", false);
@@ -139,12 +303,11 @@ public class HeroController : MonoBehaviour {
 
 		if(left)
 			transform.Translate (Vector3.left * speed * Time.deltaTime);
-		if(right)
+		else if(right)
 			transform.Translate (Vector3.right * speed * Time.deltaTime);
 		if(up)
 			transform.Translate (Vector3.up * speed * Time.deltaTime);
-		if(down)
+		else if(down)
 			transform.Translate (Vector3.down * speed * Time.deltaTime);
-	
 	}
 }
