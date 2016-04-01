@@ -4,7 +4,8 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
-
+    [HideInInspector]
+    public bool isEndless;
     Text scoreBox;
     float score;
 
