@@ -1,0 +1,3 @@
+http://opengameart.org/content/basic-map-32x32-by-silver-iv		- outdoor spritesheet
+http://opengameart.org/content/animated-slime				- Sprite enemy
+http://opengameart.org/content/animated-skeleton			- Sprite Skeleton
