@@ -1,20 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class MenuInit : MonoBehaviour {
 
 	void Awake()
 	{
-		GameObject.Find("GameValueSingleton").GetComponent<SettingsSingleton>().SetThings();
-	}
-	// Use this for initialization
-	void Start ()
-	{
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+        if(SceneManager.GetActiveScene().name == "MainMenu")
+		    GameObject.Find("GameValueSingleton").GetComponent<SettingsSingleton>().SetMenuThings();
+        else if (SceneManager.GetActiveScene().name == "GameScene")
+            GameObject.Find("GameValueSingleton").GetComponent<SettingsSingleton>().SetGameThings();
 	}
 }

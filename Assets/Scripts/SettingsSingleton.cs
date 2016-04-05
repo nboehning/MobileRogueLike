@@ -12,7 +12,6 @@ public enum gameDifficulty
 
 public class SettingsSingleton : MonoBehaviour {
     // Variables to carry over
-    int volume = 50;
     bool isSwipeShoot = true;
     bool isSwipeMove = true;
     gameDifficulty curDifficulty;
@@ -21,10 +20,8 @@ public class SettingsSingleton : MonoBehaviour {
 
     // Gameobjects that set settings
     GameObject volumeSlider;
-    GameObject shootTapToggle;
     GameObject shootSwipeToggle;
     GameObject moveSwipeToggle;
-    GameObject moveTiltToggle;
     GameObject easyToggle;
     GameObject medToggle;
     GameObject hardToggle;
@@ -33,23 +30,34 @@ public class SettingsSingleton : MonoBehaviour {
     {
         DontDestroyOnLoad(gameObject);
     }
-    public void SetThings()
+
+    public void SetMenuThings()
     {
-        if (SceneManager.GetActiveScene().name == "MainMenu")
-        {
-            // Main menu scene is loaded
-            // Find all the settings setters
-            volumeSlider = GameObject.Find("VolumeSlider");
-            shootSwipeToggle = GameObject.Find("ShootSwipeToggle");
-            moveSwipeToggle = GameObject.Find("MoveSwipeToggle");
-            easyToggle = GameObject.Find("EasyDiffToggle");
-            medToggle = GameObject.Find("MediumDiffToggle");
-            hardToggle = GameObject.Find("HardDiffToggle");
-        }
-        else if (SceneManager.GetActiveScene().name == "Game")
-        {
-            // Set necessary variables on gameobjects here
-        }
+        // Main menu scene is loaded
+        // Find all the settings setters
+        volumeSlider = GameObject.Find("VolumeSlider");
+        shootSwipeToggle = GameObject.Find("ShootSwipeToggle");
+        moveSwipeToggle = GameObject.Find("MoveSwipeToggle");
+        easyToggle = GameObject.Find("EasyDiffToggle");
+        medToggle = GameObject.Find("MediumDiffToggle");
+        hardToggle = GameObject.Find("HardDiffToggle");
+        UpdateVolume();
+    }
+
+    public void SetGameThings()
+    {
+        transform.position = Camera.main.transform.position;
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        player.GetComponent<HeroController>().isSwipeMove = isSwipeMove;
+        player.GetComponent<HeroController>().isSwipeShoot = isSwipeShoot;
+        GameObject.FindGameObjectWithTag("Spawner").GetComponent<EnemySpawner>().curDifficulty = curDifficulty;
+        GameObject.Find("GameController").GetComponent<GameController>().isEndless = isEndless;
+    }
+
+    void Start()
+    {
+        if (GameObject.FindGameObjectsWithTag("Settings").Length > 1)
+            Destroy(gameObject);
     }
     
     public void SetSettings()
@@ -72,6 +80,6 @@ public class SettingsSingleton : MonoBehaviour {
 
     public void UpdateVolume()
     {
-        volume = (int)volumeSlider.GetComponent<Slider>().value;
+        GetComponent<AudioSource>().volume = volumeSlider.GetComponent<Slider>().value / 100;
     }
 }

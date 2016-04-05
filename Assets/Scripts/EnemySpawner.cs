@@ -7,7 +7,7 @@ public class EnemySpawner : MonoBehaviour
 
 	float spawnSpeed = 1f;
 	float spawnVariance = 0.5f;
-
+    public gameDifficulty curDifficulty;
 	// Use this for initialization
 	void Start () 
 	{		
@@ -17,7 +17,7 @@ public class EnemySpawner : MonoBehaviour
 	
 	}
 	
-	void SpawnEnemy()
+	void SpawnEnemyOne()
 	{
 		GameObject tempEnemy = Instantiate (enemyPrefab,
 			                       new Vector3 (Random.Range (2f, 8f), Random.Range (4f, -4f), 0f),
@@ -25,4 +25,11 @@ public class EnemySpawner : MonoBehaviour
 		
 		Invoke("SpawnEnemy", Random.Range(spawnSpeed-spawnVariance, spawnSpeed+spawnVariance));
 	}
+
+    void SpawnEnemyTwo()
+    {
+        
+    }
+
+
 }

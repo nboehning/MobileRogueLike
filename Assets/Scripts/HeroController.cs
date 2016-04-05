@@ -15,7 +15,7 @@ public class HeroController : MonoBehaviour {
     Vector2 prevPosition;
     Vector2 curPosition;
     float touchDelta;
-    public int iComfort = 1;
+    public int iComfort = 20;
 
     // Animation Controller
     public Animator animator;
@@ -26,7 +26,8 @@ public class HeroController : MonoBehaviour {
 
     // Other
     GameObject deathPanel;
-
+    private int curLevel = 1;
+    private int levelToBeat;
 	// Use this for initialization
 	void Start () 
 	{
@@ -36,6 +37,15 @@ public class HeroController : MonoBehaviour {
 		orbPrefab = Resources.Load ("Orb") as GameObject;
         deathPanel = GameObject.Find("DeathPanel");
         deathPanel.SetActive(false);
+	    string firstTimeCheck = PlayerPrefs.GetString("IsFirstTime");
+	    if (firstTimeCheck != "yes")
+	    {
+	        levelToBeat = 1;
+	    }
+	    else
+	    {
+	        levelToBeat = PlayerPrefs.GetInt("LevelToBeat");
+	    }
 	}
 
 	void Update()

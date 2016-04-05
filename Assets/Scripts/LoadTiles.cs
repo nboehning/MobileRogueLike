@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Xml;
 
 public class LoadTiles : MonoBehaviour {
@@ -10,8 +11,11 @@ public class LoadTiles : MonoBehaviour {
     // Array of the tiles from the tileset
     private Sprite[] sprites;
 
-    public int numMaps;
-
+    private int spawnGID;
+    private int exitGID;
+     
+    public int curMap;
+    public Camera camera;
     GameObject tileParent;
 
     XmlDocument xmlDoc;
@@ -20,23 +24,31 @@ public class LoadTiles : MonoBehaviour {
     void Start()
     {
         tileParent = GameObject.Find("TileParent");
-        LoadMap(Random.Range(0, mapInformation.Length));
+        //LoadMap(Random.Range(0, mapInformation.Length));
+        LoadMap(1);
     }
 
     void LoadMap(int mapNumber)
     {
-        // Load the tileset into the sprites array
-        sprites = Resources.LoadAll<Sprite>("roguelikeSheet_transparent");
 
         xmlDoc = new XmlDocument();
 
         switch (mapNumber)
         {
             case 0:
+                curMap = 0;
                 xmlDoc.LoadXml(mapInformation[0].text);
                 break;
             case 1:
+                // Load the tileset into the sprites array
+                sprites = Resources.LoadAll<Sprite>("OutdoorTileset");
+                curMap = 1;
+                gameObject.transform.localPosition = new Vector3(2.242f, 1.438f, -9.93f);
+                camera.orthographicSize = 1.6f;
                 xmlDoc.LoadXml(mapInformation[1].text);
+                break;
+            case 2:
+                curMap = 2;
                 break;
         }
 
@@ -89,8 +101,18 @@ public class LoadTiles : MonoBehaviour {
 
             if (spriteValue > 0)
             {
+                GameObject tempSprite;
+
                 // Create a temp gameobject and add a sprite renderer to it
-                GameObject tempSprite = new GameObject("TestBackground");
+                if(isInteractive)
+                    tempSprite = new GameObject("InteractiveTile");
+                else if (isObstacle)
+                    tempSprite = new GameObject("ObstacleTile");
+                else
+                    tempSprite = new GameObject("GenericTile");
+
+                tempSprite.transform.parent = tileParent.transform;
+
                 SpriteRenderer renderer = tempSprite.AddComponent<SpriteRenderer>();
 
                 // Add components to make it a trigger
@@ -99,6 +121,7 @@ public class LoadTiles : MonoBehaviour {
                     tempSprite.AddComponent<BoxCollider2D>();
                     tempSprite.GetComponent<BoxCollider2D>().size = new Vector2(tileWidth, tileHeight);
                     tempSprite.GetComponent<BoxCollider2D>().isTrigger = true;
+                    
                 }
                 // Add components to make tile a wall
                 else if (isObstacle)
