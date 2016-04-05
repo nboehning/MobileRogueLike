@@ -12,13 +12,17 @@ public class MenuController : MonoBehaviour {
     Vector2 prevPosition;
     Vector2 curPosition;
     float touchDelta;
-    int iComfort = 2;
+    int iComfort = 50;
 
 	// Use this for initialization
 	void Start ()
-    {
-	
-	}
+	{
+	    sceneOrganizers[0].SetActive(true);
+        sceneOrganizers[1].SetActive(false);
+        sceneOrganizers[2].SetActive(false);
+        sceneOrganizers[3].SetActive(false);
+        sceneOrganizers[4].SetActive(false);
+    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -45,10 +49,10 @@ public class MenuController : MonoBehaviour {
                             // Set current menu to false
                             sceneOrganizers[curMenu].SetActive(false);
 
-                            // Move to menu to the right of current menu
-                            if (curMenu == sceneOrganizers.Length - 1)
+                            // Move to menu to the left of current menu
+                            if (curMenu == 0)
                             {
-                                curMenu = 0;
+                                curMenu = sceneOrganizers.Length - 1;
                             }
                             else
                             {
@@ -56,7 +60,7 @@ public class MenuController : MonoBehaviour {
                                 {
                                     GameObject.Find("GameValueSingleton").GetComponent<SettingsSingleton>().SetSettings();
                                 }
-                                curMenu++;
+                                curMenu--;
                             }
                             // Set new menu to true
                             sceneOrganizers[curMenu].SetActive(true);
@@ -74,21 +78,22 @@ public class MenuController : MonoBehaviour {
                             // Set current menu to false
                             sceneOrganizers[curMenu].SetActive(false);
 
-                            // Move to menu to the left of current menu
-                            if (curMenu == 0)
+                            // Move to menu to the right of current menu
+                            if (curMenu == sceneOrganizers.Length - 1)
                             {
-                                curMenu = sceneOrganizers.Length - 1;
+                                curMenu = 0;
                             }
                             else
                             {
-                                if(curMenu == 2)
+                                if (curMenu == 2)
                                 {
                                     GameObject.Find("GameValueSingleton").GetComponent<SettingsSingleton>().SetSettings();
                                 }
-                                curMenu--;
+                                curMenu++;
                             }
                             // Set new menu to true
                             sceneOrganizers[curMenu].SetActive(true);
+                            
                         }
                         else
                         {
