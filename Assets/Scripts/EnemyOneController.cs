@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnemyController : MonoBehaviour {
+public class EnemyOneController : MonoBehaviour {
 
-	public float speed = 2.0f;
+	public float speed = 1.0f;
 	public bool right, left, up, down;
 	public Animator animator;
 
@@ -15,7 +15,7 @@ public class EnemyController : MonoBehaviour {
 		animator = GetComponent<Animator> ();
 		right = left = up = down = false;
 		heroPosition = GameObject.Find ("Hero").transform;
-		InvokeRepeating ("Accelerate", 2f, 5f);
+		InvokeRepeating ("Accelerate", 0.1f, 0.1f);
 	}
 
 	void FixedUpdate()
@@ -87,8 +87,8 @@ public class EnemyController : MonoBehaviour {
 		}
 	}
 
-	void Accelerate()
+	public void Accelerate()
 	{
-		speed += 1f;
+		speed += .001f;
 	}
 }

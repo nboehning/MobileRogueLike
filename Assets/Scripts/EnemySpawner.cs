@@ -19,8 +19,7 @@ public class EnemySpawner : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
-
-	    switch (curDifficulty)
+        switch (curDifficulty)
 	    {
 	          case gameDifficulty.EASY:
 	            EnemyOneSpawnSpeed = 1.5f;
@@ -61,5 +60,23 @@ public class EnemySpawner : MonoBehaviour
         
     }
 
+    void SpawnEnemyThree()
+    {
 
+    }
+
+    public void IncrementNumOneKilled()
+    {
+        numEnemyOneKilled++;
+    }
+
+    public void IncrementNumTwoKilled()
+    {
+        numEnemyTwoKilled++;
+    }
+
+    public void IncrementNumThreeKilled()
+    {
+        numEnemyThreeKiled++;
+    }
 }
