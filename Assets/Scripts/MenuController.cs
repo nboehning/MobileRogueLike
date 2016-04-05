@@ -85,11 +85,13 @@ public class MenuController : MonoBehaviour {
 
     public void BtnExitGame()
     {
-
+        Application.Quit();
     }
 
     public void NextMenu()
     {
+        GetComponent<AudioSource>().Play();
+
         // Set current menu to false
         sceneOrganizers[curMenu].SetActive(false);
 
@@ -108,10 +110,13 @@ public class MenuController : MonoBehaviour {
         }
         // Set new menu to true
         sceneOrganizers[curMenu].SetActive(true);
+
     }
 
     public void PrevMenu()
     {
+        GetComponent<AudioSource>().Play();
+
         // Set current menu to false
         sceneOrganizers[curMenu].SetActive(false);
 
@@ -130,5 +135,6 @@ public class MenuController : MonoBehaviour {
         }
         // Set new menu to true
         sceneOrganizers[curMenu].SetActive(true);
+
     }
 }

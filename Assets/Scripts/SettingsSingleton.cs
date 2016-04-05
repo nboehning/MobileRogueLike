@@ -51,6 +51,7 @@ public class SettingsSingleton : MonoBehaviour {
         player.GetComponent<HeroController>().isSwipeMove = isSwipeMove;
         player.GetComponent<HeroController>().isSwipeShoot = isSwipeShoot;
         GameObject.FindGameObjectWithTag("Spawner").GetComponent<EnemySpawner>().curDifficulty = curDifficulty;
+        GameObject.FindGameObjectWithTag("Spawner").GetComponent<EnemySpawner>().difficultyMultiplier = isEndless ? 4 : 2;
         GameObject.Find("GameController").GetComponent<GameController>().isEndless = isEndless;
     }
 
