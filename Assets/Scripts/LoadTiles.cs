@@ -11,9 +11,7 @@ public class LoadTiles : MonoBehaviour {
     // Array of the tiles from the tileset
     private Sprite[] sprites;
 
-    private int spawnGID;
-    private int exitGID;
-     
+    private int prevMap; 
     public int curMap;
     public Camera camera;
     GameObject tileParent;
@@ -44,12 +42,16 @@ public class LoadTiles : MonoBehaviour {
                 // Load the tileset into the sprites array
                 sprites = Resources.LoadAll<Sprite>("OutdoorTileset");
                 curMap = 1;
-                gameObject.transform.localPosition = new Vector3(2.242f, 1.438f, -9.93f);
-                camera.orthographicSize = 1.6f;
+                camera.transform.localPosition = new Vector3(0, 0, -1f);
+                camera.orthographicSize = 1.0f;
+                camera.GetComponent<CameraController>().minValues = new Vector2(1.34f, 0.849f);
+                camera.GetComponent<CameraController>().maxValues = new Vector2(7.94f, 2.04f);
                 xmlDoc.LoadXml(mapInformation[1].text);
+                prevMap = curMap;
                 break;
             case 2:
                 curMap = 2;
+                prevMap = curMap;
                 break;
         }
 
@@ -122,16 +124,21 @@ public class LoadTiles : MonoBehaviour {
                     tempSprite.AddComponent<BoxCollider2D>();
                     tempSprite.GetComponent<BoxCollider2D>().size = new Vector2(tileWidth, tileHeight);
                     tempSprite.GetComponent<BoxCollider2D>().isTrigger = true;
+                    Debug.Log(propList.Count);
                     foreach (XmlNode prop in propList)
                     {
-                        if(int.Parse(prop.Attributes["id"].Value) == spriteValue)
+                        if (int.Parse(prop.Attributes["id"].Value) == spriteValue - 1)
                         {
+                            
                             switch(prop.FirstChild.FirstChild.Attributes["name"].Value)
                             {
                                 case "MapExit":
+                                    Debug.Log("Finds map exit tile");
                                     tempSprite.tag = "isExit";
                                     break;
                                 case "isSpawn":
+                                    Debug.Log("Finds map spawn tile");
+                                    GameObject.Find("Hero").transform.position = new Vector2(0.33f, 0.64f);
                                     tempSprite.tag = "isSpawn";
                                     break;
                                 
