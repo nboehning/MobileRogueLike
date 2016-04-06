@@ -19,6 +19,7 @@ public class LoadTiles : MonoBehaviour {
     GameObject tileParent;
 
     XmlDocument xmlDoc;
+    XmlNodeList propList;
 
     // Use this for initialization
     void Start()
@@ -54,10 +55,10 @@ public class LoadTiles : MonoBehaviour {
 
 
         // Maneuver the camera
-        Camera.main.transform.position = new Vector3(0, 0f, -10f);
         Camera.main.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
 
         XmlNodeList layerNames = xmlDoc.GetElementsByTagName("layer");
+        propList = xmlDoc.SelectSingleNode("map").SelectSingleNode("tileset").SelectNodes("tile");
 
         // For each layer that exists
         foreach (XmlNode layerInfo in layerNames)
@@ -121,7 +122,22 @@ public class LoadTiles : MonoBehaviour {
                     tempSprite.AddComponent<BoxCollider2D>();
                     tempSprite.GetComponent<BoxCollider2D>().size = new Vector2(tileWidth, tileHeight);
                     tempSprite.GetComponent<BoxCollider2D>().isTrigger = true;
-                    
+                    foreach (XmlNode prop in propList)
+                    {
+                        if(int.Parse(prop.Attributes["id"].Value) == spriteValue)
+                        {
+                            switch(prop.FirstChild.FirstChild.Attributes["name"].Value)
+                            {
+                                case "MapExit":
+                                    tempSprite.tag = "isExit";
+                                    break;
+                                case "isSpawn":
+                                    tempSprite.tag = "isSpawn";
+                                    break;
+                                
+                            }
+                        }
+                    }
                 }
                 // Add components to make tile a wall
                 else if (isObstacle)
