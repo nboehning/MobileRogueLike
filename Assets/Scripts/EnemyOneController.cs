@@ -9,6 +9,10 @@ public class EnemyOneController : MonoBehaviour {
 
 	Transform heroPosition;
     private EnemySpawner spawnerScript;
+    private GameController controlScript;
+
+    private bool scoreCounts;
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -16,6 +20,8 @@ public class EnemyOneController : MonoBehaviour {
 		right = left = up = down = false;
 		heroPosition = GameObject.Find ("Hero").transform;
 	    spawnerScript = GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>();
+	    controlScript = GameObject.Find("GameController").GetComponent<GameController>();
+	    scoreCounts = !controlScript.isEndless;
 		InvokeRepeating ("Accelerate", 0.1f, 0.1f);
 	}
 
@@ -83,7 +89,9 @@ public class EnemyOneController : MonoBehaviour {
 	{
 		if (other.gameObject.tag == "Bullet")
 		{
-		    spawnerScript.IncrementNumOneKilled();   
+		    spawnerScript.IncrementNumOneKilled();
+		    if (scoreCounts)
+		        controlScript.AddScore(3f);
 			Destroy (other.gameObject);
 			Destroy (gameObject);
 		}

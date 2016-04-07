@@ -73,12 +73,16 @@ public class MenuController : MonoBehaviour {
 
     public void BtnPlayEndless()
     {
+
+
+        Debug.Log("Endless");
         GameObject.Find("GameValueSingleton").GetComponent<SettingsSingleton>().isEndless = true;
         SceneManager.LoadScene("LoadMapScene");
     }
 
     public void BtnPlayProgression()
     {
+        Debug.Log("Progression");
         GameObject.Find("GameValueSingleton").GetComponent<SettingsSingleton>().isEndless = false;
         SceneManager.LoadScene("LoadMapScene");
     }

@@ -9,6 +9,9 @@ public class EnemyTwoController : MonoBehaviour
     private int numLives;
     Transform heroPosition;
     private EnemySpawner spawnerScript;
+    private GameController controlScript;
+
+    private bool scoreCounts;
     // Use this for initialization
     void Start()
     {
@@ -16,6 +19,8 @@ public class EnemyTwoController : MonoBehaviour
         heroPosition = GameObject.Find("Hero").transform;
         spawnerScript = GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>();
         numLives = Random.Range(1, 4);
+        controlScript = GameObject.Find("GameController").GetComponent<GameController>();
+        scoreCounts = !controlScript.isEndless;
         InvokeRepeating("Accelerate", 0.1f, 0.1f);
     }
 
@@ -66,6 +71,8 @@ public class EnemyTwoController : MonoBehaviour
             numLives--;
             if (CheckLives())
             {
+                if (scoreCounts)
+                    controlScript.AddScore(5f);
                 Destroy(other.gameObject);
                 Destroy(gameObject);
             }

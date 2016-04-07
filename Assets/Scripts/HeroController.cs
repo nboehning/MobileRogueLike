@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class HeroController : MonoBehaviour {
 
@@ -25,10 +27,10 @@ public class HeroController : MonoBehaviour {
 	GameObject orbPrefab;
 
     // Other
-    GameObject deathPanel;
+    private GameObject winCarrier;
     private int curLevel = 1;
     private int levelToBeat;
-
+    private Text levelText;
 	// Use this for initialization
 	void Start () 
 	{
@@ -36,24 +38,31 @@ public class HeroController : MonoBehaviour {
 		animator = GetComponent<Animator> ();
 		right = left = up = down = false;
 		orbPrefab = Resources.Load ("Orb") as GameObject;
-        deathPanel = GameObject.Find("DeathPanel");
-        deathPanel.SetActive(false);
+	    winCarrier = GameObject.Find("ResultObject");
+	    levelText = GameObject.Find("TextLevel").GetComponent<Text>();
 	    transform.localScale = new Vector3(0.09f, 0.08f, 1.0f);
 	    string firstTimeCheck = PlayerPrefs.GetString("IsFirstTime");
 	    if (firstTimeCheck != "yes")
 	    {
 	        levelToBeat = 1;
+	        PlayerPrefs.SetString("IsFirstTime", "yes");
 	    }
 	    else
 	    {
 	        levelToBeat = PlayerPrefs.GetInt("LevelToBeat");
 	    }
+	    levelText.text = "Level: " + curLevel;
 	}
 
     void CheckWin()
     {
         if (curLevel > levelToBeat)
-            Debug.Log("You Win!");
+        {
+            winCarrier.GetComponent<CarrierScript>().hasWon = true;
+            winCarrier.GetComponent<CarrierScript>().score = GameObject.Find("GameController").GetComponent<GameController>().GetScore();
+            winCarrier.GetComponent<CarrierScript>().level = curLevel;
+            PlayerPrefs.SetInt("LevelToBeat", curLevel);
+        }
     }
 
     public void ResetPosition(Vector3 spawnPos)
@@ -171,10 +180,13 @@ public class HeroController : MonoBehaviour {
     {
         if (other.gameObject.tag == "Enemy")
         {
-            //GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>().DestroyEnemies();
+            GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>().DestroyEnemies();
             Time.timeScale = 0f;
             Debug.Log("Killed by: " + other.gameObject.name);
-            deathPanel.SetActive(true);
+            winCarrier.GetComponent<CarrierScript>().hasWon = false;
+            winCarrier.GetComponent<CarrierScript>().score = GameObject.Find("GameController").GetComponent<GameController>().GetScore();
+            winCarrier.GetComponent<CarrierScript>().level = curLevel;
+            SceneManager.LoadScene("GameOver");
         }
     }
     void SpawnOrb()
@@ -275,7 +287,65 @@ public class HeroController : MonoBehaviour {
         // Tilt Move
         else
         {
+            // Code from Tiffany Fischer in class
+            float tempX = (float)System.Math.Round(Input.acceleration.x, 2);
+            float tempY = (float)System.Math.Round(Input.acceleration.y, 2);
 
+            if ((tempX > 0.05f || tempX < -0.05f) || (tempY > 0.05f || tempY < -0.05))
+            {
+                if (tempX > 0)
+                {
+                    // Right
+                    animator.SetBool("left", false);
+                    animator.SetBool("right", true);
+                    animator.SetBool("up", false);
+                    animator.SetBool("down", false);
+
+                    down = left = up = false;
+                    right = true;
+
+                    transform.Translate(Vector3.right * speed * Time.deltaTime);
+                }
+                else
+                {
+                    // Left
+                    animator.SetBool("left", true);
+                    animator.SetBool("right", false);
+                    animator.SetBool("up", false);
+                    animator.SetBool("down", false);
+
+                    down = right = up = false;
+                    left = true;
+
+                    transform.Translate(Vector3.left * speed * Time.deltaTime);
+                }
+                if (tempY > 0)
+                {
+                    // Up
+                    animator.SetBool("left", false);
+                    animator.SetBool("right", false);
+                    animator.SetBool("up", true);
+                    animator.SetBool("down", false);
+
+                    down = left = right = false;
+                    up = true;
+
+                    transform.Translate(Vector3.up * speed * Time.deltaTime);
+                }
+                else
+                {
+                    // Down
+                    animator.SetBool("left", false);
+                    animator.SetBool("right", false);
+                    animator.SetBool("up", false);
+                    animator.SetBool("down", true);
+
+                    right = left = up = false;
+                    down = true;
+
+                    transform.Translate(Vector3.down * speed * Time.deltaTime);
+                }
+            }
         }
     }
 	void MoveCharacter()
