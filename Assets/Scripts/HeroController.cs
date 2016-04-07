@@ -50,6 +50,17 @@ public class HeroController : MonoBehaviour {
 	    }
 	}
 
+    void CheckWin()
+    {
+        if (curLevel > levelToBeat)
+            Debug.Log("You Win!");
+    }
+
+    public void ResetPosition(Vector3 spawnPos)
+    {
+        transform.position = spawnPos;
+    }
+
 	void Update()
 	{
 #if UNITY_EDITOR
@@ -146,14 +157,26 @@ public class HeroController : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.tag == "Enemy")
+
+        if (other.tag == "isExit")
         {
-            Time.timeScale = 0f;
-            Destroy(gameObject);
-            deathPanel.SetActive(true);
+            curLevel++;
+            CheckWin();
+            GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>().DestroyEnemies();
+            Camera.main.GetComponent<LoadTiles>().NextMap();
         }
     }
 
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.tag == "Enemy")
+        {
+            //GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>().DestroyEnemies();
+            Time.timeScale = 0f;
+            Debug.Log("Killed by: " + other.gameObject.name);
+            deathPanel.SetActive(true);
+        }
+    }
     void SpawnOrb()
     {
         GameObject tempOrb = Instantiate(orbPrefab, transform.position, Quaternion.identity) as GameObject;

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 public class LoadTiles : MonoBehaviour {
@@ -11,20 +12,39 @@ public class LoadTiles : MonoBehaviour {
     // Array of the tiles from the tileset
     private Sprite[] sprites;
 
-    private int prevMap; 
-    public int curMap;
-    public Camera camera;
-    GameObject tileParent;
 
+    private int prevMap = -1; 
+    public int curMap;
+    private int[] unusedMaps = {0, 1, 2};
+    public Camera camera;
+
+    private List<GameObject> tiles = new List<GameObject>();
     XmlDocument xmlDoc;
     XmlNodeList propList;
+    private Vector3 spawnPos;
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
-        tileParent = GameObject.Find("TileParent");
-        //LoadMap(Random.Range(0, mapInformation.Length));
-        LoadMap(1);
+        NextMap();
+    }
+
+    public void NextMap()
+    {
+        if(tiles.Count > 0)
+            DestroyTiles();
+        int newMap = Random.Range(0, unusedMaps.Length);
+        Debug.Log(newMap);
+        LoadMap(unusedMaps[newMap]);
+        GameObject.Find("Hero").GetComponent<HeroController>().ResetPosition(spawnPos);
+    }
+
+    void DestroyTiles()
+    {
+        for (int i = 0; i < tiles.Count; i++)
+        {
+            Destroy(tiles[i]);
+        }
     }
 
     void LoadMap(int mapNumber)
@@ -35,8 +55,15 @@ public class LoadTiles : MonoBehaviour {
         switch (mapNumber)
         {
             case 0:
+                // Load the tileset into the sprites array
+                sprites = Resources.LoadAll<Sprite>("OutdoorTileset");
                 curMap = 0;
                 xmlDoc.LoadXml(mapInformation[0].text);
+                camera.transform.localPosition = new Vector3(0, 0, -1f);
+                camera.orthographicSize = 1.0f;
+                camera.GetComponent<CameraController>().minValues = new Vector2(1.34f, 0.849f);
+                camera.GetComponent<CameraController>().maxValues = new Vector2(7.94f, 2.04f);
+                unusedMaps = new[] {1, 2};
                 break;
             case 1:
                 // Load the tileset into the sprites array
@@ -47,11 +74,19 @@ public class LoadTiles : MonoBehaviour {
                 camera.GetComponent<CameraController>().minValues = new Vector2(1.34f, 0.849f);
                 camera.GetComponent<CameraController>().maxValues = new Vector2(7.94f, 2.04f);
                 xmlDoc.LoadXml(mapInformation[1].text);
-                prevMap = curMap;
+                unusedMaps = new[] {0, 2};
                 break;
             case 2:
+                // Load the tileset into the sprites array
+                sprites = Resources.LoadAll<Sprite>("DungeonTileset");
+                Debug.Log("Should load dungeon");
                 curMap = 2;
-                prevMap = curMap;
+                camera.transform.localPosition = new Vector3(0, 0, -1f);
+                camera.orthographicSize = 1.0f;
+                camera.GetComponent<CameraController>().minValues = new Vector2(1.34f, 0.849f);
+                camera.GetComponent<CameraController>().maxValues = new Vector2(7.94f, 2.04f);
+                xmlDoc.LoadXml(mapInformation[2].text);
+                unusedMaps = new[] {0, 1};
                 break;
         }
 
@@ -106,16 +141,20 @@ public class LoadTiles : MonoBehaviour {
             {
                 GameObject tempSprite;
 
+                // Determine the location that the tile will be at
+                float locationX = tileWidth * mapLocationHorizontal;
+                float locationY = tileHeight * mapLocationVertical;
+
+                Vector3 newLocation = new Vector3(locationX, locationY);
+
                 // Create a temp gameobject and add a sprite renderer to it
-                if(isInteractive)
+                if (isInteractive)
                     tempSprite = new GameObject("InteractiveTile");
                 else if (isObstacle)
                     tempSprite = new GameObject("ObstacleTile");
                 else
                     tempSprite = new GameObject("GenericTile");
-
-                tempSprite.transform.parent = tileParent.transform;
-
+                
                 SpriteRenderer renderer = tempSprite.AddComponent<SpriteRenderer>();
 
                 // Add components to make it a trigger
@@ -133,15 +172,24 @@ public class LoadTiles : MonoBehaviour {
                             switch(prop.FirstChild.FirstChild.Attributes["name"].Value)
                             {
                                 case "MapExit":
-                                    Debug.Log("Finds map exit tile");
+                                    tempSprite.tag = "isExit";
+                                    break;
+                                case "isExit":
                                     tempSprite.tag = "isExit";
                                     break;
                                 case "isSpawn":
-                                    Debug.Log("Finds map spawn tile");
-                                    GameObject.Find("Hero").transform.position = new Vector2(0.33f, 0.64f);
                                     tempSprite.tag = "isSpawn";
+                                    spawnPos = newLocation;
                                     break;
-                                
+                                case "isEnemyDebuff":
+                                    tempSprite.tag = "isEnemyDebuff";
+                                    break;
+                                case "isBuff":
+                                    tempSprite.tag = "isBuff";
+                                    break;
+                                case "isProtect":
+                                    tempSprite.tag = "isProtect";
+                                    break;
                             }
                         }
                     }
@@ -160,14 +208,9 @@ public class LoadTiles : MonoBehaviour {
                 renderer.sprite = sprites[spriteValue - 1];
                 renderer.sortingLayerName = layerInfo.Attributes["name"].Value;
 
-                // Determine the location that the tile will be at
-                float locationX = tileWidth * mapLocationHorizontal;
-                float locationY = tileHeight * mapLocationVertical;
-
-                Vector3 newLocation = new Vector3(locationX, locationY);
-
                 // Set the position of the game object to the determined location
                 tempSprite.transform.position = newLocation;
+                tiles.Add(tempSprite);
             }
 
             // Increment our location along the horizontal

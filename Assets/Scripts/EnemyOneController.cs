@@ -3,18 +3,19 @@ using System.Collections;
 
 public class EnemyOneController : MonoBehaviour {
 
-	public float speed = 1.0f;
+	public static float speed = 0.05f;
 	public bool right, left, up, down;
 	public Animator animator;
 
 	Transform heroPosition;
-
+    private EnemySpawner spawnerScript;
 	// Use this for initialization
 	void Start () 
 	{
 		animator = GetComponent<Animator> ();
 		right = left = up = down = false;
 		heroPosition = GameObject.Find ("Hero").transform;
+	    spawnerScript = GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>();
 		InvokeRepeating ("Accelerate", 0.1f, 0.1f);
 	}
 
@@ -78,10 +79,11 @@ public class EnemyOneController : MonoBehaviour {
 			transform.Translate (Vector3.right * speed * Time.deltaTime);
 	}
 
-	void OnCollisionEnter2D(Collision2D other)
+	void OnTriggerEnter2D(Collider2D other)
 	{
-		if (other.gameObject.name == "Orb(Clone)")
+		if (other.gameObject.tag == "Bullet")
 		{
+		    spawnerScript.IncrementNumOneKilled();   
 			Destroy (other.gameObject);
 			Destroy (gameObject);
 		}
@@ -89,6 +91,6 @@ public class EnemyOneController : MonoBehaviour {
 
 	public void Accelerate()
 	{
-		speed += .001f;
+		speed += .000001f;
 	}
 }

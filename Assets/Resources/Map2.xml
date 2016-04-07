@@ -3,11 +3,26 @@
  <properties>
   <property name="DungeonEnter" value="true"/>
  </properties>
- <tileset firstgid="1" name="32x32_map_tile v3.1 [MARGINLESS]" tilewidth="32" tileheight="32" tilecount="666" columns="23">
+ <tileset firstgid="1" name="32x32_map_tile v3.1 [MARGINLESS]" tilewidth="32" tileheight="32" tilecount="667" columns="23">
   <image source="C:/Users/nboeh/Desktop/32x32_map_tile v3.1 [MARGINLESS].png" trans="ffef24" width="736" height="928"/>
   <tile id="98">
    <properties>
     <property name="MapExit" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="185">
+   <properties>
+    <property name="isBuff" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="186">
+   <properties>
+    <property name="isEnemyDebuff" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="231">
+   <properties>
+    <property name="isProtect" type="bool" value="true"/>
    </properties>
   </tile>
   <tile id="333">
@@ -725,12 +740,12 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="232"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="186"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -753,6 +768,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="232"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -761,18 +777,17 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="187"/>
+   <tile gid="0"/>
+   <tile gid="0"/>
+   <tile gid="186"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="187"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -878,21 +893,21 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="187"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="232"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="186"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
