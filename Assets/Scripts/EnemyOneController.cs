@@ -11,6 +11,7 @@ public class EnemyOneController : MonoBehaviour {
     private EnemySpawner spawnerScript;
     private GameController controlScript;
 
+    private AudioSource enemyDeathSound;
     private bool scoreCounts;
 
 	// Use this for initialization
@@ -22,7 +23,9 @@ public class EnemyOneController : MonoBehaviour {
 	    spawnerScript = GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>();
 	    controlScript = GameObject.Find("GameController").GetComponent<GameController>();
 	    scoreCounts = !controlScript.isEndless;
-		InvokeRepeating ("Accelerate", 0.1f, 0.1f);
+
+        enemyDeathSound = Camera.main.GetComponent<AudioSource>();
+        InvokeRepeating ("Accelerate", 0.1f, 0.1f);
 	}
 
 	void FixedUpdate()
@@ -89,7 +92,8 @@ public class EnemyOneController : MonoBehaviour {
 	{
 		if (other.gameObject.tag == "Bullet")
 		{
-		    spawnerScript.IncrementNumOneKilled();
+		    enemyDeathSound.Play();
+            spawnerScript.IncrementNumOneKilled();
 		    if (scoreCounts)
 		        controlScript.AddScore(3f);
 			Destroy (other.gameObject);

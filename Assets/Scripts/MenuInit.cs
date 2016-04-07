@@ -8,7 +8,7 @@ public class MenuInit : MonoBehaviour {
 	{
         if(SceneManager.GetActiveScene().name == "MainMenu")
 		    GameObject.Find("GameValueSingleton").GetComponent<SettingsSingleton>().SetMenuThings();
-        else if (SceneManager.GetActiveScene().name == "GameScene")
+        else if (SceneManager.GetActiveScene().name == "LoadMapScene")
             GameObject.Find("GameValueSingleton").GetComponent<SettingsSingleton>().SetGameThings();
 	}
 }

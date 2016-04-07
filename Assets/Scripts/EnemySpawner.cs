@@ -16,7 +16,7 @@ public class EnemySpawner : MonoBehaviour
     private int numEnemyTwoKilled;
     private int numEnemyThreeKiled;
 
-
+    private GameObject player;
     private List<GameObject> enemies = new List<GameObject>();
 
     [HideInInspector]
@@ -26,7 +26,7 @@ public class EnemySpawner : MonoBehaviour
     private Vector2 minValues;
     private Vector2 maxValues;
 	// Use this for initialization
-	void Start () 
+	void Start ()
 	{
         switch (curDifficulty)
 	    {
@@ -61,7 +61,6 @@ public class EnemySpawner : MonoBehaviour
 	{
 		GameObject tempEnemy = Instantiate (enemyOnePrefab, new Vector3 (Random.Range (minValues.x + 0.32f, maxValues.x - 0.32f), 
                                 Random.Range (minValues.y + 0.32f, maxValues.y - 0.32f), 0f), Quaternion.identity) as GameObject;
-	    enemies.Add(tempEnemy);
         Invoke("SpawnEnemyOne", EnemyOneSpawnSpeed);
     }
 
@@ -69,7 +68,6 @@ public class EnemySpawner : MonoBehaviour
     {
         GameObject tempEnemy = Instantiate(enemyTwoPrefab, new Vector3(Random.Range(minValues.x + 0.32f, maxValues.x - 0.32f),
                                 Random.Range(minValues.y + 0.32f, maxValues.y - 0.32f), 0f), Quaternion.identity) as GameObject;
-        Debug.Log(tempEnemy.transform.position);
         enemies.Add(tempEnemy);
         Invoke("SpawnEnemyTwo", EnemyTwoSpawnSpeed);
     }
@@ -79,13 +77,26 @@ public class EnemySpawner : MonoBehaviour
 
     }
 
+    public void IncreaseByProgression()
+    {
+        EnemyOneSpawnSpeed -= .01f;
+        EnemyTwoSpawnSpeed -= .006f;
+        EnemyThreeSpawnSeed -= .005f;
+    }
+
+    public void IncreaseByEndless()
+    {
+        EnemyOneSpawnSpeed -= .02f;
+        EnemyTwoSpawnSpeed -= .012f;
+        EnemyThreeSpawnSeed -= .01f;
+    }
+
     public void IncrementNumOneKilled()
     {
         numEnemyOneKilled++;
         if (numEnemyOneKilled%10 == 0)
         {
-            Debug.Log("Enemy One spawns faster");
-            EnemyOneSpawnSpeed -= .05f;
+            EnemyOneSpawnSpeed -= .005f;
         }
     }
 
@@ -94,7 +105,7 @@ public class EnemySpawner : MonoBehaviour
         numEnemyTwoKilled++;
         if (numEnemyTwoKilled%10 == 0)
         {
-            EnemyTwoSpawnSpeed -= .03f;
+            EnemyTwoSpawnSpeed -= .003f;
         }
     }
 
@@ -103,7 +114,7 @@ public class EnemySpawner : MonoBehaviour
         numEnemyThreeKiled++;
         if (numEnemyThreeKiled%10 == 0)
         {
-            EnemyThreeSpawnSeed -= .025f;
+            EnemyThreeSpawnSeed -= .0025f;
         }
     }
 

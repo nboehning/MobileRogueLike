@@ -26,11 +26,15 @@ public class HeroController : MonoBehaviour {
 	public float orbSpeed = 20f;
 	GameObject orbPrefab;
 
+    // Specials
+    private bool isInvincible;
+
     // Other
     private GameObject winCarrier;
     private int curLevel = 1;
     private int levelToBeat;
     private Text levelText;
+    private bool endless;
 	// Use this for initialization
 	void Start () 
 	{
@@ -41,15 +45,21 @@ public class HeroController : MonoBehaviour {
 	    winCarrier = GameObject.Find("ResultObject");
 	    levelText = GameObject.Find("TextLevel").GetComponent<Text>();
 	    transform.localScale = new Vector3(0.09f, 0.08f, 1.0f);
-	    string firstTimeCheck = PlayerPrefs.GetString("IsFirstTime");
-	    if (firstTimeCheck != "yes")
+	    endless = GameObject.Find("GameController").GetComponent<GameController>().isEndless;
+
+
+        string firstTimeCheck = PlayerPrefs.GetString("IsFirstTime");
+
+        if (firstTimeCheck != "yes")
 	    {
 	        levelToBeat = 1;
-	        PlayerPrefs.SetString("IsFirstTime", "yes");
+            PlayerPrefs.SetInt("LevelToBeat", 1);
+            PlayerPrefs.SetString("IsFirstTime", "yes");
 	    }
 	    else
 	    {
 	        levelToBeat = PlayerPrefs.GetInt("LevelToBeat");
+            Debug.Log("Level to beat: " + levelToBeat);
 	    }
 	    levelText.text = "Level: " + curLevel;
 	}
@@ -62,6 +72,7 @@ public class HeroController : MonoBehaviour {
             winCarrier.GetComponent<CarrierScript>().score = GameObject.Find("GameController").GetComponent<GameController>().GetScore();
             winCarrier.GetComponent<CarrierScript>().level = curLevel;
             PlayerPrefs.SetInt("LevelToBeat", curLevel);
+            SceneManager.LoadScene("GameOver");
         }
     }
 
@@ -166,32 +177,78 @@ public class HeroController : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
-
         if (other.tag == "isExit")
         {
             curLevel++;
             CheckWin();
+            levelText.text = "Level: " + curLevel;
+            if(endless)
+                GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>().IncreaseByEndless();
+            else
+                GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>().IncreaseByProgression();
             GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>().DestroyEnemies();
             Camera.main.GetComponent<LoadTiles>().NextMap();
         }
+        if (other.tag == "isBuff")
+        {
+            Destroy(other.gameObject);
+            Debug.Log("Should speed up");
+            speed = speed*1.25f;
+            Invoke("RemoveBuff", 2f);
+        }
+        if (other.tag == "isProtect")
+        {
+            Destroy(other.gameObject);
+            Debug.Log("is Invincible");
+            isInvincible = true;
+            Invoke("RemoveProtect", 1.5f);
+        }
+        if (other.tag == "isEnemyDebuff")
+        {
+            Destroy(other.gameObject);
+            Debug.Log("SLows enemies down");
+            EnemyOneController.speed /= 2;
+            EnemyTwoController.speedTwo /= 2;
+            Invoke("RemoveDebuff", 3f);
+        }
+    }
+
+    void RemoveDebuff()
+    {
+        EnemyOneController.speed *= 2;
+        EnemyTwoController.speedTwo *= 2;
+    }
+
+    void RemoveProtect()
+    {
+        isInvincible = false;
+    }
+
+    void RemoveBuff()
+    {
+        speed = speed/1.25f;
     }
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.tag == "Enemy")
+        if (!isInvincible)
         {
-            GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>().DestroyEnemies();
-            Time.timeScale = 0f;
-            Debug.Log("Killed by: " + other.gameObject.name);
-            winCarrier.GetComponent<CarrierScript>().hasWon = false;
-            winCarrier.GetComponent<CarrierScript>().score = GameObject.Find("GameController").GetComponent<GameController>().GetScore();
-            winCarrier.GetComponent<CarrierScript>().level = curLevel;
-            SceneManager.LoadScene("GameOver");
+            if (other.gameObject.tag == "Enemy")
+            {
+                GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>().DestroyEnemies();
+                Time.timeScale = 0f;
+                winCarrier.GetComponent<CarrierScript>().hasWon = false;
+                winCarrier.GetComponent<CarrierScript>().score =
+                    GameObject.Find("GameController").GetComponent<GameController>().GetScore();
+                winCarrier.GetComponent<CarrierScript>().level = curLevel;
+                SceneManager.LoadScene("GameOver");
+            }
         }
     }
     void SpawnOrb()
     {
         GameObject tempOrb = Instantiate(orbPrefab, transform.position, Quaternion.identity) as GameObject;
+        GetComponent<AudioSource>().Play();
         Rigidbody2D tempOrbRigidbody = tempOrb.GetComponent<Rigidbody2D>();
         if (right)
             tempOrbRigidbody.velocity = new Vector2(orbSpeed, 0f);

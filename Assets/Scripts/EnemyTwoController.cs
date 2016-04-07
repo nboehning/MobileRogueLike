@@ -10,7 +10,7 @@ public class EnemyTwoController : MonoBehaviour
     Transform heroPosition;
     private EnemySpawner spawnerScript;
     private GameController controlScript;
-
+    private AudioSource enemyDeathSound;
     private bool scoreCounts;
     // Use this for initialization
     void Start()
@@ -19,6 +19,7 @@ public class EnemyTwoController : MonoBehaviour
         heroPosition = GameObject.Find("Hero").transform;
         spawnerScript = GameObject.Find("EnemySpawner").GetComponent<EnemySpawner>();
         numLives = Random.Range(1, 4);
+        enemyDeathSound = Camera.main.GetComponent<AudioSource>();
         controlScript = GameObject.Find("GameController").GetComponent<GameController>();
         scoreCounts = !controlScript.isEndless;
         InvokeRepeating("Accelerate", 0.1f, 0.1f);
@@ -71,6 +72,8 @@ public class EnemyTwoController : MonoBehaviour
             numLives--;
             if (CheckLives())
             {
+                enemyDeathSound.Play();
+                spawnerScript.IncrementNumTwoKilled();
                 if (scoreCounts)
                     controlScript.AddScore(5f);
                 Destroy(other.gameObject);

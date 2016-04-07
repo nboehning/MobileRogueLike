@@ -1,3 +1,8 @@
-http://opengameart.org/content/basic-map-32x32-by-silver-iv		- outdoor spritesheet
-http://opengameart.org/content/animated-slime				- Sprite enemy
-http://opengameart.org/content/animated-skeleton			- Sprite Skeleton
+http://opengameart.org/content/basic-map-32x32-by-silver-iv		- outdoor spritesheet by Silver IV CC-BY 3.0 http://creativecommons.org/licenses/by/3.0/
+http://opengameart.org/content/animated-slime				- Sprite Slime by Calciumtrice CC-BY 3.0 http://creativecommons.org/licenses/by/3.0/
+http://opengameart.org/content/goblin-death					- Enemy Death SFX by spookymodem CC-BY 3.0 http://creativecommons.org/licenses/by/3.0/
+http://opengameart.org/content/denzis-public-domain-art		- Dungeon spritesheet by Denzi CC0 http://creativecommons.org/publicdomain/zero/1.0/
+http://soundbible.com/1702-Button-Press-2.html				- Button Press SFX by Marianne Gagnon Attribution 3.0 http://creativecommons.org/licenses/by/3.0/
+http://opengameart.org/content/fantasy-ui-button			- Button Art by StumpyStrust CC-BY 3.0 http://creativecommons.org/licenses/by/3.0/
+http://opengameart.org/content/torch-0						- Animated Torches by Jordan Irwin(AntumDeluge) CC-BY 3.0 http://creativecommons.org/licenses/by/3.0/
+http://opengameart.org/content/exploring-a-cave				- Background Music by Pugly CC-BY-SA 3.0 http://creativecommons.org/licenses/by-sa/3.0/

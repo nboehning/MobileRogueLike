@@ -53,6 +53,7 @@ public class SettingsSingleton : MonoBehaviour {
         GameObject.FindGameObjectWithTag("Spawner").GetComponent<EnemySpawner>().curDifficulty = curDifficulty;
         GameObject.FindGameObjectWithTag("Spawner").GetComponent<EnemySpawner>().difficultyMultiplier = isEndless ? 4 : 2;
         GameObject.Find("GameController").GetComponent<GameController>().isEndless = isEndless;
+        Debug.Log("Settings is endless: " + isEndless);
     }
 
     void Start()
